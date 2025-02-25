@@ -1,0 +1,6 @@
+bin/*
+!bin/*.cr
+.DS_Store
+lib/*
+!shard.yml
+!shard.lock
