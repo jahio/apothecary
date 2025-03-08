@@ -87,6 +87,11 @@ GEM
       reline (>= 0.3.8)
     drb (2.2.1)
     erubi (1.13.1)
+    factory_bot (6.5.1)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.4.4)
+      factory_bot (~> 6.5)
+      railties (>= 5.0.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.7)
@@ -108,6 +113,9 @@ GEM
     marcel (1.0.4)
     mini_mime (1.1.5)
     minitest (5.25.4)
+    minitest-rails (8.0.0)
+      minitest (~> 5.20)
+      railties (>= 8.0.0, < 8.1.0)
     net-imap (0.5.6)
       date
       net-protocol
@@ -215,6 +223,8 @@ PLATFORMS
 DEPENDENCIES
   brakeman
   debug
+  factory_bot_rails
+  minitest-rails (~> 8.0.0)
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 8.0.1)
