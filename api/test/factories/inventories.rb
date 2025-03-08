@@ -9,10 +9,10 @@ FactoryBot.define do
     # drastically unrealistic scenarios from coming about.
     #
     physical_qty { rand(1000) + 1000 }
-    qty_reserved { physical_qty - rand(777) }
+    qty_reserved { physical_qty - rand(500) }
 
     # This one's very weird: Testing revealed everything from division by zero
     # to literal Infinity even though it was just 100.0 divided by 10.0 initially.
-    price_per_unit { (rand(100.0) + 0.9) / (rand(10) + 1.0) }
+    price_per_unit { (rand(100.0) + 0.9) / (rand(10) + 1.0).round(2) }
   end
 end
