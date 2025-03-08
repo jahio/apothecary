@@ -1,7 +1,12 @@
 class Pharmacy < ApplicationRecord
+
+  has_many :inventories
+  has_many :drugs, through: :inventories
+
   validates :name, :address, :city, :state, :zip, presence: true
   validate :must_have_one_phone
   validate :must_have_one_human
+
   before_save :strip_number_formatting
 
   private

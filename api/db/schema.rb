@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_08_060321) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_08_063309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -54,6 +54,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_08_060321) do
     t.index ["stimulant"], name: "index_drugs_on_stimulant"
   end
 
+  create_table "inventories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "drug_id"
+    t.uuid "pharmacy_id"
+    t.bigint "physical_qty"
+    t.bigint "qty_reserved"
+    t.float "price_per_unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["drug_id"], name: "index_inventories_on_drug_id"
+    t.index ["pharmacy_id"], name: "index_inventories_on_pharmacy_id"
+    t.index ["physical_qty"], name: "index_inventories_on_physical_qty"
+    t.index ["price_per_unit"], name: "index_inventories_on_price_per_unit"
+    t.index ["qty_reserved"], name: "index_inventories_on_qty_reserved"
+  end
+
   create_table "pharmacies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name"
     t.text "address"
@@ -82,4 +97,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_08_060321) do
     t.index ["state"], name: "index_pharmacies_on_state"
     t.index ["zip"], name: "index_pharmacies_on_zip"
   end
+
+  add_foreign_key "inventories", "drugs"
+  add_foreign_key "inventories", "pharmacies"
 end
