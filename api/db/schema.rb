@@ -12,23 +12,24 @@
 
 ActiveRecord::Schema[8.0].define(version: 2025_03_08_063309) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "hstore"
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
   create_table "drugs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.text "name"
-    t.text "form"
-    t.text "administration_route"
-    t.text "description"
-    t.text "dea_identifier"
-    t.integer "schedule"
+    t.text "name", null: false
+    t.text "form", null: false
+    t.text "administration_route", null: false
+    t.text "description", null: false
+    t.text "dea_identifier", null: false
+    t.integer "schedule", null: false
     t.boolean "addictive"
     t.boolean "stimulant"
     t.boolean "depressant"
     t.boolean "opioid"
     t.boolean "painkiller"
-    t.text "dosage_unit"
-    t.bigint "dosage_qty"
+    t.text "dosage_unit", null: false
+    t.bigint "dosage_qty", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["addictive"], name: "index_drugs_on_addictive"
@@ -55,11 +56,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_08_063309) do
   end
 
   create_table "inventories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "drug_id"
-    t.uuid "pharmacy_id"
-    t.bigint "physical_qty"
-    t.bigint "qty_reserved"
-    t.float "price_per_unit"
+    t.uuid "drug_id", null: false
+    t.uuid "pharmacy_id", null: false
+    t.bigint "physical_qty", default: 0, null: false
+    t.bigint "qty_reserved", default: 0, null: false
+    t.float "price_per_unit", default: 1.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["drug_id"], name: "index_inventories_on_drug_id"
@@ -70,16 +71,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_08_063309) do
   end
 
   create_table "pharmacies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.text "name"
-    t.text "address"
-    t.text "city"
-    t.text "state"
-    t.text "zip"
+    t.text "name", null: false
+    t.text "address", null: false
+    t.text "city", null: false
+    t.text "state", null: false
+    t.text "zip", null: false
     t.text "lat"
     t.text "lon"
-    t.text "phones_human", array: true
-    t.text "phones_fax", array: true
-    t.jsonb "personnel"
+    t.text "phones_human", null: false, array: true
+    t.text "phones_fax", null: false, array: true
+    t.jsonb "personnel", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["address", "lat", "lon", "zip"], name: "index_pharmacies_on_address_and_lat_and_lon_and_zip"

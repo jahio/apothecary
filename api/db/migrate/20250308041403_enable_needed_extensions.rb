@@ -1,5 +1,7 @@
 class EnableNeededExtensions < ActiveRecord::Migration[8.0]
   def change
-    enable_extension "pgcrypto" unless extension_enabled?("pgcrypto")
+    %w[pgcrypto hstore].each do |ext|
+      enable_extension ext unless extension_enabled?(ext)
+    end
   end
 end

@@ -1,34 +1,23 @@
 class CreateDrugs < ActiveRecord::Migration[8.0]
   def change
     create_table :drugs, id: :uuid do |t|
-      t.text         :name
-      t.text         :form # e.g. liquid, pill, mist, etc.
-      t.text         :administration_route # injected, oral, inhaled...
-      t.text         :description # basic description for the public
-      t.text         :dea_identifier # how the DEA identifies this drug
-      t.integer      :schedule # Schedule 1-4 classification (legal class)
-      t.boolean      :addictive # Is it addictive?
-      t.boolean      :stimulant # Is it a stimulant?
-      t.boolean      :depressant # Is it a depressant?
-      t.boolean      :opioid # Is this an opioid?
-      t.boolean      :painkiller # Is it a pain killer of some kind?
-      t.text         :dosage_unit # Unit of measure for dosage - milligrams, milliliters, etc.
-      t.bigint       :dosage_qty # Dosage quantity - how many mg or mcg or ml or whatever
+      t.text         :name, index: true, null: false
+      t.text         :form, index: true, null: false # e.g. liquid, pill, mist, etc.
+      t.text         :administration_route, null: false # injected, oral, inhaled...
+      t.text         :description, null: false # basic description for the public
+      t.text         :dea_identifier, index: true, null: false # how the DEA identifies this drug
+      t.integer      :schedule, index: true, null: false # Schedule 1-4 classification (legal class)
+      t.boolean      :addictive, index: true # Is it addictive?
+      t.boolean      :stimulant, index: true # Is it a stimulant?
+      t.boolean      :depressant, index: true # Is it a CNS depressant?
+      t.boolean      :opioid, index: true # Is this an opioid?
+      t.boolean      :painkiller, index: true # Is it a pain killer of some kind?
+      t.text         :dosage_unit, index: true, null: false # Unit of measure for dosage - milligrams, milliliters, etc.
+      t.bigint       :dosage_qty, index: true, null: false # Dosage quantity - how many mg or mcg or ml or whatever
       t.timestamps
     end
 
-    # Indexes
-    add_index :drugs, :name
-    add_index :drugs, :form
-    add_index :drugs, :dea_identifier
-    add_index :drugs, :schedule
-    add_index :drugs, :addictive
-    add_index :drugs, :stimulant
-    add_index :drugs, :depressant
-    add_index :drugs, :opioid
-    add_index :drugs, :painkiller
-    add_index :drugs, :dosage_unit
-    add_index :drugs, :dosage_qty
+    # Indexes - most of these are composite to speed combination searches
     add_index :drugs, [:opioid, :painkiller]
     add_index :drugs, [:stimulant, :addictive]
     add_index :drugs, [:depressant, :addictive]
