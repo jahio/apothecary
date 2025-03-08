@@ -10,10 +10,49 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_08_050115) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_08_060321) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
+
+  create_table "drugs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "name"
+    t.text "form"
+    t.text "administration_route"
+    t.text "description"
+    t.text "dea_identifier"
+    t.integer "schedule"
+    t.boolean "addictive"
+    t.boolean "stimulant"
+    t.boolean "depressant"
+    t.boolean "opioid"
+    t.boolean "painkiller"
+    t.text "dosage_unit"
+    t.bigint "dosage_qty"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addictive"], name: "index_drugs_on_addictive"
+    t.index ["dea_identifier", "addictive"], name: "index_drugs_on_dea_identifier_and_addictive"
+    t.index ["dea_identifier", "name"], name: "index_drugs_on_dea_identifier_and_name"
+    t.index ["dea_identifier", "opioid"], name: "index_drugs_on_dea_identifier_and_opioid"
+    t.index ["dea_identifier", "schedule"], name: "index_drugs_on_dea_identifier_and_schedule"
+    t.index ["dea_identifier"], name: "index_drugs_on_dea_identifier"
+    t.index ["depressant", "addictive"], name: "index_drugs_on_depressant_and_addictive"
+    t.index ["depressant"], name: "index_drugs_on_depressant"
+    t.index ["dosage_qty"], name: "index_drugs_on_dosage_qty"
+    t.index ["dosage_unit"], name: "index_drugs_on_dosage_unit"
+    t.index ["form"], name: "index_drugs_on_form"
+    t.index ["name", "dosage_qty", "dosage_unit"], name: "index_drugs_on_name_and_dosage_qty_and_dosage_unit"
+    t.index ["name", "form"], name: "index_drugs_on_name_and_form"
+    t.index ["name"], name: "index_drugs_on_name"
+    t.index ["opioid", "painkiller"], name: "index_drugs_on_opioid_and_painkiller"
+    t.index ["opioid"], name: "index_drugs_on_opioid"
+    t.index ["painkiller"], name: "index_drugs_on_painkiller"
+    t.index ["schedule", "addictive"], name: "index_drugs_on_schedule_and_addictive"
+    t.index ["schedule"], name: "index_drugs_on_schedule"
+    t.index ["stimulant", "addictive"], name: "index_drugs_on_stimulant_and_addictive"
+    t.index ["stimulant"], name: "index_drugs_on_stimulant"
+  end
 
   create_table "pharmacies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name"
