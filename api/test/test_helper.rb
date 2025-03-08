@@ -16,6 +16,7 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     # fixtures :all
 
-    # Add more helper methods to be used by all tests here...
+    # Set Faker's locale to US; this is so it doesn't generate strange formatted phone numbers etc.
+    Faker::Config.locale = 'en-US'
   end
 end

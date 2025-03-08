@@ -26,7 +26,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   self.implicit_order_column = "created_at"
 
-  validates :created_at, presence: true
+  validates :created_at, presence: true, unless: :new_record?
 
   private
 
