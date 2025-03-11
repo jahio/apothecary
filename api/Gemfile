@@ -16,11 +16,13 @@ gem 'tzinfo-data', platforms: %i[ mswin jruby ]
 gem 'rack-cors'
 
 group :development, :test do
+  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
+  gem 'brakeman', require: false
+
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[ mri mswin ], require: 'debug/prelude'
 
-  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem 'brakeman', require: false
+  gem 'dotenv'
 
   # For generating fake but real-ish looking test data
   gem 'faker'

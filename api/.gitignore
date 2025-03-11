@@ -9,6 +9,9 @@
 
 # Ignore all environment files.
 /.env*
+!.env
+# We contribute .env simply because this is a test/demo app, and the user/pass is
+# only dev/dev, intended for local development. How is that "secure"?
 
 # Ignore all logfiles and tempfiles.
 /log/*
