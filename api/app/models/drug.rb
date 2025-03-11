@@ -39,4 +39,36 @@ Consider:
 - Final up: 14.87 to 30.08, 15 rows, 0.165 to 0.317 for merely 15 rows, one loop
 - And that's WITH indexes - and a lot of stuff we get handed from previous contractors hasn't got ANY indexes at all!
 
+---
+
+Stats for counts on this:
+
+psql -d apothecary_development
+psql (16.8 (Homebrew), server 16.7 (Homebrew))
+Type "help" for help.
+
+apothecary_development=# SELECT COUNT(*) FROM drugs;
+ count
+-------
+    16
+(1 row)
+
+apothecary_development=# SELECT COUNT(*) FROM inventories;
+ count
+-------
+   240
+(1 row)
+
+apothecary_development=# SELECT COUNT(*) FROM pharmacies;
+ count
+-------
+    15
+(1 row)
+
+---
+
+What happens when drugs goes to over 150,000?
+Pharmacies to 10,000,000?
+Inventories to hundreds of billions of combinations?
+
 =end
