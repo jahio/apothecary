@@ -43,7 +43,7 @@ FactoryBot.define do
       form { "liquid" }
       administration_route { "oral" }
       dosage_unit { "mg/mg/mL" }
-      schedule { 3 }
+      schedule { 2 }
 
       # All of these are due to the codeine
       addictive { true }
