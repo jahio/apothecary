@@ -4,12 +4,14 @@ namespace :db do
     puts "Refusing to run outside development mode!" && exit unless Rails.env.development?
 
     ["db:drop", "db:create", "db:migrate", "db:seed"].each do |t|
+      Rake::Task["db:force_disconnect"].invoke
+      Rails.logger.info(["Proceeding with task", t].join(" "))
       Rake::Task[t].invoke
     end
   end
 
   desc "Forcibly disconnects clients before invoking db:rebuild"
-  task :force_rebuild => :environment do
+  task :force_disconnect => :environment do
     db_config = ActiveRecord::Base.connection_db_config.configuration_hash
 
     dcon_q = <<~END_QUERY
@@ -37,7 +39,6 @@ namespace :db do
     # So subsequent queries work, now we reconnect to AR/DB
     ActiveRecord::Base.establish_connection(Rails.env.to_sym)
 
-    # Finally, invoke rebuild
-    Rake::Task['db:rebuild'].invoke
+    Rails.logger.warn("Disconnected other clients; proceeding...")
   end
 end
