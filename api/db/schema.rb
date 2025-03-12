@@ -10,11 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_08_063309) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_12_152701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "inventory_event_operation", ["pickup", "return_to_shelf", "return_to_manufacturer", "destroyed", "theft", "law_enforcement_action", "other"]
 
   create_table "drugs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name", null: false
@@ -70,6 +74,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_08_063309) do
     t.index ["qty_reserved"], name: "index_inventories_on_qty_reserved"
   end
 
+  create_table "inventory_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "pharmacy_id"
+    t.uuid "drug_id"
+    t.bigint "qty", default: 0, null: false
+    t.enum "operation", default: "pickup", null: false, enum_type: "inventory_event_operation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["drug_id"], name: "index_inventory_events_on_drug_id"
+    t.index ["operation"], name: "index_inventory_events_on_operation"
+    t.index ["pharmacy_id"], name: "index_inventory_events_on_pharmacy_id"
+    t.index ["qty"], name: "index_inventory_events_on_qty"
+  end
+
   create_table "pharmacies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name", null: false
     t.text "address", null: false
@@ -101,4 +118,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_08_063309) do
 
   add_foreign_key "inventories", "drugs"
   add_foreign_key "inventories", "pharmacies"
+  add_foreign_key "inventory_events", "drugs"
+  add_foreign_key "inventory_events", "pharmacies"
 end
