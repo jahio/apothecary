@@ -8,67 +8,32 @@ end
 
 =begin
 
-                                                           QUERY PLAN
---------------------------------------------------------------------------------------------------------------------------------
- Hash Join  (cost=14.87..30.08 rows=15 width=241) (actual time=0.165..0.317 rows=15 loops=1)
-   Hash Cond: (inventories.pharmacy_id = pharmacies.id)
-   ->  Nested Loop  (cost=0.15..15.32 rows=15 width=257) (actual time=0.060..0.203 rows=15 loops=1)
-         ->  Index Scan using drugs_pkey on drugs  (cost=0.15..8.17 rows=1 width=241) (actual time=0.034..0.037 rows=1 loops=1)
-               Index Cond: (id = '019583b6-9aa6-7535-aafc-df69be985f43'::uuid)
-         ->  Seq Scan on inventories  (cost=0.00..7.00 rows=15 width=32) (actual time=0.021..0.157 rows=15 loops=1)
-               Filter: (drug_id = '019583b6-9aa6-7535-aafc-df69be985f43'::uuid)
-               Rows Removed by Filter: 225
-   ->  Hash  (cost=12.10..12.10 rows=210 width=16) (actual time=0.025..0.025 rows=15 loops=1)
-         Buckets: 1024  Batches: 1  Memory Usage: 9kB
-         ->  Seq Scan on pharmacies  (cost=0.00..12.10 rows=210 width=16) (actual time=0.012..0.014 rows=15 loops=1)
- Planning Time: 0.787 ms
- Execution Time: 0.396 ms
-(13 rows)
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+p = Pharmacy.where(state: "TX")
+d = Drug.first
+Inventory.where('physical_qty - qty_reserved > 0').where(pharmacy: p, drug: d).explain(:analyze)
 
----
-
-Explain/Analyze'd query:
-
-EXPLAIN ANALYZE SELECT "drugs".* FROM "drugs" INNER JOIN "inventories" ON "inventories"."drug_id" = "drugs"."id" INNER JOIN "pharmacies" ON "pharmacies"."id" = "inventories"."pharmacy_id" WHERE "drugs"."id" = '019583b6-9aa6-7535-aafc-df69be985f43';
-
-
-Consider:
-- Inner loop: 225 rows removed by filter, 0 to 7.0 cost, 15 rows returned
-- Next up: 0.15 to 8.17 for just ONE ROW!
-- Next out: 0.15 to 15.32 for 15 rows, 0.6 to 0.203! From 7.0 to 203! That's 29 times larger in size, exactly! (203/7 = 29)
-- Final up: 14.87 to 30.08, 15 rows, 0.165 to 0.317 for merely 15 rows, one loop
-- And that's WITH indexes - and a lot of stuff we get handed from previous contractors hasn't got ANY indexes at all!
-
----
-
-Stats for counts on this:
-
-psql -d apothecary_development
-psql (16.8 (Homebrew), server 16.7 (Homebrew))
-Type "help" for help.
-
-apothecary_development=# SELECT COUNT(*) FROM drugs;
- count
--------
-    16
-(1 row)
-
-apothecary_development=# SELECT COUNT(*) FROM inventories;
- count
--------
-   240
-(1 row)
-
-apothecary_development=# SELECT COUNT(*) FROM pharmacies;
- count
--------
-    15
-(1 row)
-
----
-
-What happens when drugs goes to over 150,000?
-Pharmacies to 10,000,000?
-Inventories to hundreds of billions of combinations?
+=>
+EXPLAIN (ANALYZE) SELECT "inventories".* FROM "inventories" WHERE (physical_qty - qty_reserved > 0) AND "inventories"."pharmacy_id" IN (SELECT "pharmacies"."id" F>
+                                                                         QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=51.67..979.44 rows=7 width=88) (actual time=0.486..6.547 rows=22 loops=1)
+   ->  Bitmap Heap Scan on pharmacies  (cost=8.42..81.20 rows=19 width=16) (actual time=0.025..0.058 rows=19 loops=1)
+         Recheck Cond: (state = 'TX'::text)
+         Heap Blocks: exact=17
+         ->  Bitmap Index Scan on index_pharmacies_on_state  (cost=0.00..8.42 rows=19 width=0) (actual time=0.015..0.016 rows=19 loops=1)
+               Index Cond: (state = 'TX'::text)
+   ->  Bitmap Heap Scan on inventories  (cost=43.25..47.27 rows=1 width=88) (actual time=0.337..0.337 rows=1 loops=19)
+         Recheck Cond: ((drug_id = '01958840-6a1e-7e18-81e9-090ef3611baf'::uuid) AND (pharmacy_id = pharmacies.id))
+         Filter: ((physical_qty - qty_reserved) > 0)
+         Heap Blocks: exact=22
+         ->  BitmapAnd  (cost=43.25..43.25 rows=1 width=0) (actual time=0.326..0.326 rows=0 loops=19)
+               ->  Bitmap Index Scan on index_inventories_on_drug_id  (cost=0.00..20.33 rows=1054 width=0) (actual time=0.190..0.190 rows=996 loops=19)
+                     Index Cond: (drug_id = '01958840-6a1e-7e18-81e9-090ef3611baf'::uuid)
+               ->  Bitmap Index Scan on index_inventories_on_pharmacy_id  (cost=0.00..22.57 rows=1353 width=0) (actual time=0.063..0.063 rows=1172 loops=19)
+                     Index Cond: (pharmacy_id = pharmacies.id)
+ Planning Time: 0.705 ms
+ Execution Time: 6.622 ms
+(17 rows)
 
 =end
