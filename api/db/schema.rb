@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_13_014638) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_13_043502) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
   enable_extension "pg_catalog.plpgsql"
@@ -212,4 +212,77 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_014638) do
   add_foreign_key "inventories", "pharmacies"
   add_foreign_key "inventory_events", "drugs"
   add_foreign_key "inventory_events", "pharmacies"
+
+  create_view "inventories_mds", materialized: true, sql_definition: <<-SQL
+      SELECT gen_random_uuid() AS id,
+      drugs.id AS drug_id,
+      inventories.drug_id AS inv_drug_id,
+      inventories.pharmacy_id AS inv_pharmacy_id,
+      drugs.name AS drug_name,
+      drugs.form AS drug_form,
+      drugs.administration_route,
+      drugs.dosage_unit,
+      drugs.dosage_qty,
+      pharmacies.id AS pharmacy_id,
+      pharmacies.name AS pharmacy_name,
+      pharmacies.address AS pharmacy_address,
+      pharmacies.city AS pharmacy_city,
+      pharmacies.state AS pharmacy_state,
+      pharmacies.zip AS pharmacy_zip,
+      sum((inventories.physical_qty - inventories.qty_reserved)) AS available_qty
+     FROM drugs,
+      pharmacies,
+      inventories
+    WHERE ((drugs.id = inventories.drug_id) AND (pharmacies.id = inventories.pharmacy_id) AND (pharmacies.state = 'MD'::text))
+    GROUP BY drugs.id, inventories.drug_id, inventories.pharmacy_id, pharmacies.id, pharmacies.state
+    ORDER BY (sum((inventories.physical_qty - inventories.qty_reserved))) DESC;
+  SQL
+  create_view "inventories_txes", materialized: true, sql_definition: <<-SQL
+      SELECT gen_random_uuid() AS id,
+      drugs.id AS drug_id,
+      inventories.drug_id AS inv_drug_id,
+      inventories.pharmacy_id AS inv_pharmacy_id,
+      drugs.name AS drug_name,
+      drugs.form AS drug_form,
+      drugs.administration_route,
+      drugs.dosage_unit,
+      drugs.dosage_qty,
+      pharmacies.id AS pharmacy_id,
+      pharmacies.name AS pharmacy_name,
+      pharmacies.address AS pharmacy_address,
+      pharmacies.city AS pharmacy_city,
+      pharmacies.state AS pharmacy_state,
+      pharmacies.zip AS pharmacy_zip,
+      sum((inventories.physical_qty - inventories.qty_reserved)) AS available_qty
+     FROM drugs,
+      pharmacies,
+      inventories
+    WHERE ((drugs.id = inventories.drug_id) AND (pharmacies.id = inventories.pharmacy_id) AND (pharmacies.state = 'TX'::text))
+    GROUP BY drugs.id, inventories.drug_id, inventories.pharmacy_id, pharmacies.id, pharmacies.state
+    ORDER BY (sum((inventories.physical_qty - inventories.qty_reserved))) DESC;
+  SQL
+  create_view "inventories_vas", materialized: true, sql_definition: <<-SQL
+      SELECT gen_random_uuid() AS id,
+      drugs.id AS drug_id,
+      inventories.drug_id AS inv_drug_id,
+      inventories.pharmacy_id AS inv_pharmacy_id,
+      drugs.name AS drug_name,
+      drugs.form AS drug_form,
+      drugs.administration_route,
+      drugs.dosage_unit,
+      drugs.dosage_qty,
+      pharmacies.id AS pharmacy_id,
+      pharmacies.name AS pharmacy_name,
+      pharmacies.address AS pharmacy_address,
+      pharmacies.city AS pharmacy_city,
+      pharmacies.state AS pharmacy_state,
+      pharmacies.zip AS pharmacy_zip,
+      sum((inventories.physical_qty - inventories.qty_reserved)) AS available_qty
+     FROM drugs,
+      pharmacies,
+      inventories
+    WHERE ((drugs.id = inventories.drug_id) AND (pharmacies.id = inventories.pharmacy_id) AND (pharmacies.state = 'VA'::text))
+    GROUP BY drugs.id, inventories.drug_id, inventories.pharmacy_id, pharmacies.id, pharmacies.state
+    ORDER BY (sum((inventories.physical_qty - inventories.qty_reserved))) DESC;
+  SQL
 end

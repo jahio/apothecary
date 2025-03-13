@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/scenic-views/scenic.git
+  revision: 3766dd57c1fc5ac418f5af67be7c6ad5d1c0e074
+  ref: 3766dd57c1fc5ac418f5af67be7c6ad5d1c0e074
+  specs:
+    scenic (1.8.0)
+      activerecord (>= 4.0.0)
+      railties (>= 4.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -253,6 +262,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rack-cors
   rails (~> 8.0.1)
+  scenic!
   tzinfo-data
 
 BUNDLED WITH

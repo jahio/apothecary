@@ -6,6 +6,9 @@ gem 'rails', '~> 8.0.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
 
+# For (materialized) views
+gem 'scenic', git: 'https://github.com/scenic-views/scenic.git', ref: '3766dd57c1fc5ac418f5af67be7c6ad5d1c0e074'
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem 'puma', '>= 5.0'
 
