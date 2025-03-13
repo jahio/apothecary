@@ -32,7 +32,7 @@ namespace :db do
     ActiveRecord::Base.connection.disconnect!
 
     # NOW, we can execute a disconnect from the manual query above, forcing other clients to disconnect
-    conn = PG.connect(ENV.fetch("DATABASE_URL", { db_name: db_config['database'] }))
+    conn = PG.connect(ENV.fetch("DATABASE_URL", { db_name: db_config[:database] }))
     conn.exec(dcon_q)
     conn.close
 

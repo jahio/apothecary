@@ -6,11 +6,10 @@ class InventoryEvent < ApplicationRecord
     destroyed
     theft
     law_enforcement_action
-    other
   ].freeze
 
   belongs_to :pharmacy
   belongs_to :drug
   validates :qty, presence: true, numericality: true
-  validates :operation, presence: true
+  validates :operation, presence: true, inclusion: VALID_OPERATIONS
 end

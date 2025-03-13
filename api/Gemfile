@@ -34,3 +34,5 @@ group :development, :test do
   # And also factory bot rails for test factories
   gem 'factory_bot_rails'
 end
+
+gem "good_job", "~> 4.9"

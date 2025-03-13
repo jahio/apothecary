@@ -88,6 +88,8 @@ GEM
     dotenv (3.1.7)
     drb (2.2.1)
     erubi (1.13.1)
+    et-orbi (1.2.11)
+      tzinfo
     factory_bot (6.5.1)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.4.4)
@@ -95,8 +97,18 @@ GEM
       railties (>= 5.0.0)
     faker (3.5.1)
       i18n (>= 1.8.11, < 2)
+    fugit (1.11.1)
+      et-orbi (~> 1, >= 1.2.11)
+      raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    good_job (4.9.3)
+      activejob (>= 6.1.0)
+      activerecord (>= 6.1.0)
+      concurrent-ruby (>= 1.3.1)
+      fugit (>= 1.11.0)
+      railties (>= 6.1.0)
+      thor (>= 1.0.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     io-console (0.8.0)
@@ -156,6 +168,7 @@ GEM
       stringio
     puma (6.6.0)
       nio4r (~> 2.0)
+    raabro (1.4.0)
     racc (1.8.1)
     rack (3.1.11)
     rack-cors (2.0.2)
@@ -233,6 +246,7 @@ DEPENDENCIES
   dotenv
   factory_bot_rails
   faker
+  good_job (~> 4.9)
   minitest-matchers_vaccine
   minitest-rails (~> 8.0.0)
   pg (~> 1.1)
