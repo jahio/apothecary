@@ -4,8 +4,8 @@ require 'etc'
 n_threads = Etc.nprocessors
 
 # Total number of pharmacies and drugs across all threads
-t_pharmacies = 1_000
-t_drugs = 1_000
+t_pharmacies = 100
+t_drugs = 100
 
 # Purge the relevant tables
 [Inventory, Drug, Pharmacy].each { |k| k.send(:delete_all) }

@@ -15,6 +15,8 @@ SELECT
   pharmacies.state AS pharmacy_state,
   pharmacies.zip AS pharmacy_zip,
   SUM(inventories.physical_qty - inventories.qty_reserved) AS available_qty
+  NOW() as created_at,
+  NOW() as updated_at
 FROM drugs, pharmacies, inventories
 WHERE drugs.id = inventories.drug_id
 AND pharmacies.id = inventories.pharmacy_id

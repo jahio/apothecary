@@ -3,8 +3,7 @@ namespace :db do
   task :rebuild => :environment do
     puts "Refusing to run outside development mode!" && exit unless Rails.env.development?
 
-    ["db:drop", "db:create", "db:migrate", "db:seed"].each do |t|
-      Rake::Task["db:force_disconnect"].invoke
+    ["db:force_disconnect", "db:drop", "db:create", "db:migrate", "db:seed"].each do |t|
       Rails.logger.info(["Proceeding with task", t].join(" "))
       Rake::Task[t].invoke
     end
@@ -16,7 +15,7 @@ namespace :db do
 
     dcon_q = <<~END_QUERY
       SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity
-      WHERE pg_stat_activity.datname='#{db_config['database']}'
+      WHERE pg_stat_activity.datname='#{db_config[:database]}'
       AND pid <> pg_backend_pid();
     END_QUERY
 
