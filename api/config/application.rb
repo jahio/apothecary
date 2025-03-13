@@ -52,6 +52,11 @@ module ApothecaryApi
         cron: "*/5 * * * *",
         class: "InventoryUpdaterJob",
         description: "Applies inventory update records every 5 minutes"
+      },
+      geo_dist_mat_views_update: {
+        cron: "*/3 * * * *",
+        class: "RebuildStateInventoryViewsJob",
+        description: "Updates materialized views for each state-level view of pharmacy inventories"
       }
     }
 
