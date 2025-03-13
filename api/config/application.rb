@@ -46,7 +46,7 @@ module ApothecaryApi
 
     config.active_job.queue_adapter = :good_job
     config.good_job.enable_cron = true
-    config.good_job.cron_graceful_restart_period = 5.minutes
+    config.good_job.cron_graceful_restart_period = 1.minute
     config.good_job.cron = {
       inventory_updater: {
         cron: "*/5 * * * *",
